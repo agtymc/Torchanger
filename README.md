@@ -17,7 +17,7 @@ Torchanger is a desktop application that starts, monitors, and manages multiple 
 
 ![Torchanger main window](docs/screenshots/torchanger000.png)
 
-### Compact View
+### Settings
 
 ![Torchanger compact view](docs/screenshots/torchanger001.png)
 
