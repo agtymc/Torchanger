@@ -41,3 +41,13 @@ build/
 ### Packaging ###
 packaging/deb/dist/
 packaging/deb/tmp/
+
+\!files
+.idea
+.torchanger
+packaging
+build-linux-app.sh
+install-desktop.sh
+LAUNCH.md
+torchanger.desktop
+AGENTS.md

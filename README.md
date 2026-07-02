@@ -1,6 +1,6 @@
 # Torchanger
 
-Torchanger is a desktop application for Ubuntu that starts, monitors, and manages multiple Tor connection profiles from a single window.
+Torchanger is a desktop application that starts, monitors, and manages multiple Tor connection profiles from a single window.
 
 ## Features
 
@@ -15,23 +15,11 @@ Torchanger is a desktop application for Ubuntu that starts, monitors, and manage
 
 ### Main Window
 
-![Torchanger main window](!files/screenshots/torchanger000.png)
+![Torchanger main window](docs/screenshots/torchanger000.png)
 
 ### Compact View
 
-![Torchanger compact view](!files/screenshots/torchanger001.png)
-
-## Debian Package
-
-The repository includes a `.deb` packaging workflow based on `jpackage` with additional Debian metadata for Ubuntu-compatible repositories.
-
-Build locally:
-
-```bash
-./packaging/deb/build-deb.sh
-```
-
-The package will be created in `packaging/deb/dist/`.
+![Torchanger compact view](docs/screenshots/torchanger001.png)
 
 ## Runtime Dependencies
 
