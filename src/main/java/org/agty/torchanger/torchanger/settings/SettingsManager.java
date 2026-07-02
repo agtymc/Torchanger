@@ -1,4 +1,4 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.settings;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Properties;
+import org.agty.torchanger.torchanger.bridge.BridgeCatalogEntry;
 
 public class SettingsManager {
     public static final String MANUAL_VANILLA_FILE = "manual-vanilla-bridges.txt";

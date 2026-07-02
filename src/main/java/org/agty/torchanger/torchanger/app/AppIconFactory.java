@@ -1,4 +1,4 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.app;
 
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;

@@ -1,4 +1,4 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.app;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -7,6 +7,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.agty.torchanger.torchanger.ui.TorchangerController;
 
 import java.io.IOException;
 
@@ -16,9 +17,9 @@ public class TorchangerApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         Platform.setImplicitExit(false);
-        FXMLLoader fxmlLoader = new FXMLLoader(TorchangerApplication.class.getResource("main-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(TorchangerApplication.class.getResource("/org/agty/torchanger/torchanger/main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1240, 760);
-        scene.getStylesheets().add(TorchangerApplication.class.getResource("theme.css").toExternalForm());
+        scene.getStylesheets().add(TorchangerApplication.class.getResource("/org/agty/torchanger/torchanger/theme.css").toExternalForm());
         controller = fxmlLoader.getController();
         stage.getIcons().add(AppIconFactory.createFxIcon());
         controller.attachStage(stage);

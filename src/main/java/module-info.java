@@ -8,6 +8,13 @@ module org.agty.torchanger.torchanger {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
 
-    opens org.agty.torchanger.torchanger to javafx.fxml;
-    exports org.agty.torchanger.torchanger;
+    opens org.agty.torchanger.torchanger.ui to javafx.fxml;
+    exports org.agty.torchanger.torchanger.app;
+    exports org.agty.torchanger.torchanger.bridge;
+    exports org.agty.torchanger.torchanger.config;
+    exports org.agty.torchanger.torchanger.proxy;
+    exports org.agty.torchanger.torchanger.settings;
+    exports org.agty.torchanger.torchanger.tor;
+    exports org.agty.torchanger.torchanger.tor.profile;
+    exports org.agty.torchanger.torchanger.ui;
 }

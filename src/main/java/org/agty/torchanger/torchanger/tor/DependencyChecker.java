@@ -1,4 +1,4 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.tor;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;

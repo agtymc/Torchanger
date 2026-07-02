@@ -1,4 +1,8 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.settings;
+
+import org.agty.torchanger.torchanger.app.AppEnvironment;
+import org.agty.torchanger.torchanger.bridge.BridgeCatalog;
+import org.agty.torchanger.torchanger.config.AppDefaults;
 
 public final class AppSettings {
     private String language;

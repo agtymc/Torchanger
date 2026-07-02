@@ -88,7 +88,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>org.agty.torchanger.torchanger/org.agty.torchanger.torchanger.TorchangerApplication
+                            <mainClass>org.agty.torchanger.torchanger/org.agty.torchanger.torchanger.app.TorchangerApplication
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

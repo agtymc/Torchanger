@@ -1,4 +1,4 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.settings;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -20,6 +20,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.agty.torchanger.torchanger.bridge.BridgeCatalog;
+import org.agty.torchanger.torchanger.bridge.BridgeCatalogEntry;
+import org.agty.torchanger.torchanger.config.I18n;
+import org.agty.torchanger.torchanger.tor.profile.TorLaunchMode;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -38,7 +42,7 @@ public final class SettingsDialog {
             dialog.initModality(Modality.WINDOW_MODAL);
         }
         DialogPane pane = dialog.getDialogPane();
-        pane.getStylesheets().add(SettingsDialog.class.getResource("theme.css").toExternalForm());
+        pane.getStylesheets().add(SettingsDialog.class.getResource("/org/agty/torchanger/torchanger/theme.css").toExternalForm());
         pane.getStyleClass().add("settings-pane");
         pane.setPrefWidth(760);
         pane.setMaxWidth(760);

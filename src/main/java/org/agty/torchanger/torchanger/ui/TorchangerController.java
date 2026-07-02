@@ -1,4 +1,4 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.ui;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -23,6 +23,19 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import org.agty.torchanger.torchanger.app.AppEnvironment;
+import org.agty.torchanger.torchanger.app.AppInfo;
+import org.agty.torchanger.torchanger.bridge.BridgeCatalog;
+import org.agty.torchanger.torchanger.bridge.BridgeCatalogEntry;
+import org.agty.torchanger.torchanger.config.I18n;
+import org.agty.torchanger.torchanger.settings.AppSettings;
+import org.agty.torchanger.torchanger.settings.SettingsDialog;
+import org.agty.torchanger.torchanger.settings.SettingsManager;
+import org.agty.torchanger.torchanger.tor.DependencyChecker;
+import org.agty.torchanger.torchanger.tor.TorManager;
+import org.agty.torchanger.torchanger.tor.TorManagerListener;
+import org.agty.torchanger.torchanger.tor.profile.TorInstanceSpec;
+import org.agty.torchanger.torchanger.tor.profile.TorLaunchMode;
 
 import java.awt.Desktop;
 import java.io.IOException;

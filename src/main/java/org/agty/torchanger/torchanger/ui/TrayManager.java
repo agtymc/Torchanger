@@ -1,7 +1,8 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.ui;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import org.agty.torchanger.torchanger.app.AppIconFactory;
 
 import java.awt.AWTException;
 import java.awt.MenuItem;

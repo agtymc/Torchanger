@@ -1,4 +1,4 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.bridge;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +15,9 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import org.agty.torchanger.torchanger.config.ResourceConfig;
+import org.agty.torchanger.torchanger.settings.SettingsManager;
+import org.agty.torchanger.torchanger.tor.profile.TorLaunchMode;
 
 public final class BridgeCatalog {
     private static final java.util.Properties CONFIG =

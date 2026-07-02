@@ -1,4 +1,4 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.tor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,6 +28,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.agty.torchanger.torchanger.app.AppEnvironment;
+import org.agty.torchanger.torchanger.bridge.BridgeCatalog;
+import org.agty.torchanger.torchanger.bridge.BridgeCatalogEntry;
+import org.agty.torchanger.torchanger.config.AppDefaults;
+import org.agty.torchanger.torchanger.config.ResourceConfig;
+import org.agty.torchanger.torchanger.proxy.SimpleHttpProxyServer;
+import org.agty.torchanger.torchanger.proxy.SimpleSocks5ProxyServer;
+import org.agty.torchanger.torchanger.settings.AppSettings;
+import org.agty.torchanger.torchanger.settings.SettingsManager;
+import org.agty.torchanger.torchanger.tor.profile.TorInstanceSpec;
+import org.agty.torchanger.torchanger.tor.profile.TorLaunchMode;
 
 public class TorManager {
     private static final String DEFAULT_SNOWFLAKE_BRIDGE = ResourceConfig.loadText(

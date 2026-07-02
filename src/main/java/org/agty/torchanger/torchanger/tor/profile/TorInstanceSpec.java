@@ -1,6 +1,9 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.tor.profile;
 
 import java.util.List;
+import org.agty.torchanger.torchanger.bridge.BridgeCatalog;
+import org.agty.torchanger.torchanger.bridge.BridgeCatalogEntry;
+import org.agty.torchanger.torchanger.config.AppDefaults;
 
 public final class TorInstanceSpec {
     private final String id;
@@ -30,13 +33,7 @@ public final class TorInstanceSpec {
     }
 
     public static List<TorInstanceSpec> defaults() {
-        return List.of(
-                new TorInstanceSpec("direct", "Direct", AppDefaults.intValue("directSocksPort", 9060), AppDefaults.intValue("directHttpPort", 19060), "vanilla", TorLaunchMode.DIRECT, null),
-                new TorInstanceSpec("vanilla-bridges", "Vanilla Bridges", AppDefaults.intValue("vanillaSocksPort", 9061), AppDefaults.intValue("vanillaHttpPort", 19061), "bridge relay", TorLaunchMode.VANILLA_BRIDGE, BridgeCatalog.vanillaTested()),
-                new TorInstanceSpec("obfs4-bridges", "obfs4 Bridges", AppDefaults.intValue("obfs4SocksPort", 9062), AppDefaults.intValue("obfs4HttpPort", 19062), "obfs4proxy", TorLaunchMode.OBFS4, BridgeCatalog.obfs4Tested()),
-                new TorInstanceSpec("snowflake", "Snowflake", AppDefaults.intValue("snowflakeSocksPort", 9063), AppDefaults.intValue("snowflakeHttpPort", 19063), "snowflake-client", TorLaunchMode.SNOWFLAKE, null),
-                new TorInstanceSpec("webtunnel", "WebTunnel", AppDefaults.intValue("webtunnelSocksPort", 9065), AppDefaults.intValue("webtunnelHttpPort", 19065), "lyrebird", TorLaunchMode.WEBTUNNEL, BridgeCatalog.webTunnelTested())
-        );
+        return BuiltinProfiles.defaults();
     }
 
     public String id() { return id; }

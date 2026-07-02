@@ -1,4 +1,4 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.proxy;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

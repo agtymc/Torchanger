@@ -1,4 +1,4 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.config;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,11 +7,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Properties;
 
-final class ResourceConfig {
+public final class ResourceConfig {
     private ResourceConfig() {
     }
 
-    static Properties loadProperties(String resourcePath) {
+    public static Properties loadProperties(String resourcePath) {
         try (InputStream stream = ResourceConfig.class.getResourceAsStream(resourcePath)) {
             if (stream == null) {
                 return new Properties();
@@ -24,7 +24,7 @@ final class ResourceConfig {
         }
     }
 
-    static String loadText(String resourcePath, String fallback) {
+    public static String loadText(String resourcePath, String fallback) {
         try (InputStream stream = ResourceConfig.class.getResourceAsStream(resourcePath)) {
             if (stream == null) {
                 return fallback;
@@ -35,7 +35,7 @@ final class ResourceConfig {
         }
     }
 
-    static List<String> indexedValues(Properties properties, String prefix) {
+    public static List<String> indexedValues(Properties properties, String prefix) {
         return properties.stringPropertyNames().stream()
                 .filter(name -> name.startsWith(prefix))
                 .sorted((left, right) -> Integer.compare(indexOf(left, prefix), indexOf(right, prefix)))

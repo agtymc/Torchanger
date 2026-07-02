@@ -1,4 +1,4 @@
-package org.agty.torchanger.torchanger;
+package org.agty.torchanger.torchanger.config;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
