@@ -276,6 +276,10 @@ public class TorchangerController implements TorManagerListener {
             spec.setSocksPort(settings.snowflakeSocksPort());
             spec.setHttpPort(settings.snowflakeHttpPort());
         });
+        specs.stream().filter(spec -> spec.id().equals("meek")).findFirst().ifPresent(spec -> {
+            spec.setSocksPort(settings.meekSocksPort());
+            spec.setHttpPort(settings.meekHttpPort());
+        });
         specs.stream().filter(spec -> spec.id().equals("webtunnel")).findFirst().ifPresent(spec -> {
             spec.setSocksPort(settings.webtunnelSocksPort());
             spec.setHttpPort(settings.webtunnelHttpPort());
@@ -287,6 +291,7 @@ public class TorchangerController implements TorManagerListener {
         specs.stream().filter(spec -> spec.id().equals("vanilla-bridges")).findFirst().ifPresent(spec -> spec.setAutoStart(settings.vanillaAutoStart()));
         specs.stream().filter(spec -> spec.id().equals("obfs4-bridges")).findFirst().ifPresent(spec -> spec.setAutoStart(settings.obfs4AutoStart()));
         specs.stream().filter(spec -> spec.id().equals("snowflake")).findFirst().ifPresent(spec -> spec.setAutoStart(settings.snowflakeAutoStart()));
+        specs.stream().filter(spec -> spec.id().equals("meek")).findFirst().ifPresent(spec -> spec.setAutoStart(settings.meekAutoStart()));
         specs.stream().filter(spec -> spec.id().equals("webtunnel")).findFirst().ifPresent(spec -> spec.setAutoStart(settings.webtunnelAutoStart()));
     }
 
@@ -475,6 +480,7 @@ public class TorchangerController implements TorManagerListener {
             case "vanilla-bridges" -> settings.setVanillaAutoStart(value);
             case "obfs4-bridges" -> settings.setObfs4AutoStart(value);
             case "snowflake" -> settings.setSnowflakeAutoStart(value);
+            case "meek" -> settings.setMeekAutoStart(value);
             case "webtunnel" -> settings.setWebtunnelAutoStart(value);
             default -> {
             }

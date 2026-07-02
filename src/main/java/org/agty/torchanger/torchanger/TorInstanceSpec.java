@@ -35,7 +35,7 @@ public final class TorInstanceSpec {
                 new TorInstanceSpec("vanilla-bridges", "Vanilla Bridges", AppDefaults.intValue("vanillaSocksPort", 9061), AppDefaults.intValue("vanillaHttpPort", 19061), "bridge relay", TorLaunchMode.VANILLA_BRIDGE, BridgeCatalog.vanillaTested()),
                 new TorInstanceSpec("obfs4-bridges", "obfs4 Bridges", AppDefaults.intValue("obfs4SocksPort", 9062), AppDefaults.intValue("obfs4HttpPort", 19062), "obfs4proxy", TorLaunchMode.OBFS4, BridgeCatalog.obfs4Tested()),
                 new TorInstanceSpec("snowflake", "Snowflake", AppDefaults.intValue("snowflakeSocksPort", 9063), AppDefaults.intValue("snowflakeHttpPort", 19063), "snowflake-client", TorLaunchMode.SNOWFLAKE, null),
-                new TorInstanceSpec("webtunnel", "WebTunnel", AppDefaults.intValue("webtunnelSocksPort", 9064), AppDefaults.intValue("webtunnelHttpPort", 19064), "lyrebird", TorLaunchMode.WEBTUNNEL, BridgeCatalog.webTunnelTested())
+                new TorInstanceSpec("webtunnel", "WebTunnel", AppDefaults.intValue("webtunnelSocksPort", 9065), AppDefaults.intValue("webtunnelHttpPort", 19065), "lyrebird", TorLaunchMode.WEBTUNNEL, BridgeCatalog.webTunnelTested())
         );
     }
 
@@ -79,7 +79,11 @@ public final class TorInstanceSpec {
 
     public String bridgeSourceDescription() {
         if (bridgeEntry == null) {
-            return mode == TorLaunchMode.SNOWFLAKE ? ".torchanger/bridges/snowflake.txt" : "not required";
+            return switch (mode) {
+                case SNOWFLAKE -> ".torchanger/bridges/snowflake.txt";
+                case MEEK -> ".torchanger/bridges/meek.txt";
+                default -> "not required";
+            };
         }
         return ".torchanger/bridge-cache/" + bridgeEntry.fileName();
     }

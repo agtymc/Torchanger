@@ -5,5 +5,6 @@ public enum TorLaunchMode {
     VANILLA_BRIDGE,
     OBFS4,
     SNOWFLAKE,
+    MEEK,
     WEBTUNNEL
 }

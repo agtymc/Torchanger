@@ -25,17 +25,21 @@ public final class AppSettings {
     private int obfs4HttpPort;
     private int snowflakeSocksPort;
     private int snowflakeHttpPort;
+    private int meekSocksPort;
+    private int meekHttpPort;
     private int webtunnelSocksPort;
     private int webtunnelHttpPort;
     private int directTorSocksPort;
     private int vanillaTorSocksPort;
     private int obfs4TorSocksPort;
     private int snowflakeTorSocksPort;
+    private int meekTorSocksPort;
     private int webtunnelTorSocksPort;
     private boolean directAutoStart;
     private boolean vanillaAutoStart;
     private boolean obfs4AutoStart;
     private boolean snowflakeAutoStart;
+    private boolean meekAutoStart;
     private boolean webtunnelAutoStart;
     private String proxyUsername;
     private String proxyPassword;
@@ -66,8 +70,10 @@ public final class AppSettings {
         settings.obfs4HttpPort = AppDefaults.intValue("obfs4HttpPort", 19062);
         settings.snowflakeSocksPort = AppDefaults.intValue("snowflakeSocksPort", 9063);
         settings.snowflakeHttpPort = AppDefaults.intValue("snowflakeHttpPort", 19063);
-        settings.webtunnelSocksPort = AppDefaults.intValue("webtunnelSocksPort", 9064);
-        settings.webtunnelHttpPort = AppDefaults.intValue("webtunnelHttpPort", 19064);
+        settings.meekSocksPort = AppDefaults.intValue("meekSocksPort", 9064);
+        settings.meekHttpPort = AppDefaults.intValue("meekHttpPort", 19064);
+        settings.webtunnelSocksPort = AppDefaults.intValue("webtunnelSocksPort", 9065);
+        settings.webtunnelHttpPort = AppDefaults.intValue("webtunnelHttpPort", 19065);
         int torSocksBase = AppEnvironment.isPackaged()
                 ? AppDefaults.intValue("packagedTorSocksPortBase", 9260)
                 : AppDefaults.intValue("developmentTorSocksPortBase", 9360);
@@ -75,11 +81,13 @@ public final class AppSettings {
         settings.vanillaTorSocksPort = torSocksBase + 1;
         settings.obfs4TorSocksPort = torSocksBase + 2;
         settings.snowflakeTorSocksPort = torSocksBase + 3;
-        settings.webtunnelTorSocksPort = torSocksBase + 4;
+        settings.meekTorSocksPort = torSocksBase + 4;
+        settings.webtunnelTorSocksPort = torSocksBase + 5;
         settings.directAutoStart = false;
         settings.vanillaAutoStart = false;
         settings.obfs4AutoStart = false;
         settings.snowflakeAutoStart = false;
+        settings.meekAutoStart = false;
         settings.webtunnelAutoStart = false;
         settings.proxyUsername = "";
         settings.proxyPassword = "";
@@ -112,17 +120,21 @@ public final class AppSettings {
         copy.obfs4HttpPort = source.obfs4HttpPort;
         copy.snowflakeSocksPort = source.snowflakeSocksPort;
         copy.snowflakeHttpPort = source.snowflakeHttpPort;
+        copy.meekSocksPort = source.meekSocksPort;
+        copy.meekHttpPort = source.meekHttpPort;
         copy.webtunnelSocksPort = source.webtunnelSocksPort;
         copy.webtunnelHttpPort = source.webtunnelHttpPort;
         copy.directTorSocksPort = source.directTorSocksPort;
         copy.vanillaTorSocksPort = source.vanillaTorSocksPort;
         copy.obfs4TorSocksPort = source.obfs4TorSocksPort;
         copy.snowflakeTorSocksPort = source.snowflakeTorSocksPort;
+        copy.meekTorSocksPort = source.meekTorSocksPort;
         copy.webtunnelTorSocksPort = source.webtunnelTorSocksPort;
         copy.directAutoStart = source.directAutoStart;
         copy.vanillaAutoStart = source.vanillaAutoStart;
         copy.obfs4AutoStart = source.obfs4AutoStart;
         copy.snowflakeAutoStart = source.snowflakeAutoStart;
+        copy.meekAutoStart = source.meekAutoStart;
         copy.webtunnelAutoStart = source.webtunnelAutoStart;
         copy.proxyUsername = source.proxyUsername;
         copy.proxyPassword = source.proxyPassword;
@@ -177,6 +189,10 @@ public final class AppSettings {
     public void setSnowflakeSocksPort(int snowflakeSocksPort) { this.snowflakeSocksPort = snowflakeSocksPort; }
     public int snowflakeHttpPort() { return snowflakeHttpPort; }
     public void setSnowflakeHttpPort(int snowflakeHttpPort) { this.snowflakeHttpPort = snowflakeHttpPort; }
+    public int meekSocksPort() { return meekSocksPort; }
+    public void setMeekSocksPort(int meekSocksPort) { this.meekSocksPort = meekSocksPort; }
+    public int meekHttpPort() { return meekHttpPort; }
+    public void setMeekHttpPort(int meekHttpPort) { this.meekHttpPort = meekHttpPort; }
     public int webtunnelSocksPort() { return webtunnelSocksPort; }
     public void setWebtunnelSocksPort(int webtunnelSocksPort) { this.webtunnelSocksPort = webtunnelSocksPort; }
     public int webtunnelHttpPort() { return webtunnelHttpPort; }
@@ -189,6 +205,8 @@ public final class AppSettings {
     public void setObfs4TorSocksPort(int obfs4TorSocksPort) { this.obfs4TorSocksPort = obfs4TorSocksPort; }
     public int snowflakeTorSocksPort() { return snowflakeTorSocksPort; }
     public void setSnowflakeTorSocksPort(int snowflakeTorSocksPort) { this.snowflakeTorSocksPort = snowflakeTorSocksPort; }
+    public int meekTorSocksPort() { return meekTorSocksPort; }
+    public void setMeekTorSocksPort(int meekTorSocksPort) { this.meekTorSocksPort = meekTorSocksPort; }
     public int webtunnelTorSocksPort() { return webtunnelTorSocksPort; }
     public void setWebtunnelTorSocksPort(int webtunnelTorSocksPort) { this.webtunnelTorSocksPort = webtunnelTorSocksPort; }
     public boolean directAutoStart() { return directAutoStart; }
@@ -199,6 +217,8 @@ public final class AppSettings {
     public void setObfs4AutoStart(boolean obfs4AutoStart) { this.obfs4AutoStart = obfs4AutoStart; }
     public boolean snowflakeAutoStart() { return snowflakeAutoStart; }
     public void setSnowflakeAutoStart(boolean snowflakeAutoStart) { this.snowflakeAutoStart = snowflakeAutoStart; }
+    public boolean meekAutoStart() { return meekAutoStart; }
+    public void setMeekAutoStart(boolean meekAutoStart) { this.meekAutoStart = meekAutoStart; }
     public boolean webtunnelAutoStart() { return webtunnelAutoStart; }
     public void setWebtunnelAutoStart(boolean webtunnelAutoStart) { this.webtunnelAutoStart = webtunnelAutoStart; }
     public String proxyUsername() { return proxyUsername; }

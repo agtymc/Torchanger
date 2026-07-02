@@ -34,6 +34,10 @@ public class TorManager {
             "/org/agty/torchanger/torchanger/config/snowflake-default-bridge.txt",
             "Bridge snowflake 192.0.2.3:80 2B280B23E1107BB62ABFC40DDCC8824814F80A72"
     );
+    private static final String DEFAULT_MEEK_BRIDGE = ResourceConfig.loadText(
+            "/org/agty/torchanger/torchanger/config/meek-default-bridge.txt",
+            "Bridge meek_lite 0.0.2.0:2 url=https://meek.azureedge.net/ front=ajax.aspnetcdn.com"
+    );
     private static final String DEFAULT_SNOWFLAKE_BROKER = "https://snowflake-broker.torproject.net/";
     private static final String DEFAULT_SNOWFLAKE_ICE = "stun:stun.l.google.com:19302,stun:stun.cloudflare.com:3478";
     private static final Pattern HOST_PORT_PATTERN = Pattern.compile("(?:with|at)\\s+([^\\s]+:\\d+)");
@@ -42,6 +46,7 @@ public class TorManager {
     private static final int WEBTUNNEL_BRIDGES_IN_TORRC = 75;
     private static final int WEBTUNNEL_HOST_ERROR_LIMIT = 3;
     private static final int SNOWFLAKE_STALL_SECONDS = 60;
+    private static final int MEEK_STALL_SECONDS = 60;
     private static final int PACKAGED_CONTROL_PORT_BASE = AppDefaults.intValue("packagedControlPortBase", 30060);
     private static final int DEVELOPMENT_CONTROL_PORT_BASE = AppDefaults.intValue("developmentControlPortBase", 31060);
     private static final List<String> NOISY_WARNING_MARKERS = List.of(
@@ -110,7 +115,12 @@ public class TorManager {
                 # Replace with your preferred Snowflake bridge lines if needed.
                 %s
                 """.formatted(DEFAULT_SNOWFLAKE_BRIDGE));
+        writeTemplateIfMissing(bridgesDir.resolve("meek.txt"), """
+                # Replace with your preferred meek bridge lines if needed.
+                %s
+                """.formatted(DEFAULT_MEEK_BRIDGE));
         listener.onOverallLog("Snowflake bridge file: " + bridgesDir.resolve("snowflake.txt").toAbsolutePath());
+        listener.onOverallLog("Meek bridge file: " + bridgesDir.resolve("meek.txt").toAbsolutePath());
     }
 
     public void updateBridgeCache() throws IOException, InterruptedException {
@@ -308,6 +318,11 @@ public class TorManager {
                                 + " -log " + runtime.transportLogFile.toAbsolutePath()
                 );
                 lines.addAll(readSnowflakeLines(runtime));
+            }
+            case MEEK -> {
+                verifyBinary("lyrebird");
+                lines.add("ClientTransportPlugin meek_lite exec /usr/bin/lyrebird");
+                lines.addAll(readMeekLines(runtime));
             }
             case WEBTUNNEL -> {
                 verifyBinary("lyrebird");
@@ -536,6 +551,54 @@ public class TorManager {
         return List.of(selected);
     }
 
+    private List<String> readMeekLines(RuntimeInstance runtime) throws IOException {
+        Path file = bridgesDir.resolve("meek.txt");
+        String preferredBridge = loadLastSuccessfulBridge("meek.txt");
+        Set<String> blacklist = loadBlacklist("meek.txt");
+        List<String> candidates = new ArrayList<>();
+        int skippedByBlacklist = 0;
+        if (Files.exists(file)) {
+            for (String line : Files.readAllLines(file, StandardCharsets.UTF_8)) {
+                String trimmed = line.trim();
+                if (trimmed.isEmpty() || trimmed.startsWith("#")) {
+                    continue;
+                }
+                String normalized = trimmed.startsWith("Bridge ") ? trimmed : "Bridge " + trimmed;
+                if (blacklist.contains("bridge:" + normalized)) {
+                    skippedByBlacklist++;
+                    continue;
+                }
+                if (preferredBridge != null && preferredBridge.equals(normalized)) {
+                    candidates.add(0, normalized);
+                } else {
+                    candidates.add(normalized);
+                }
+            }
+        }
+        if (candidates.isEmpty()) {
+            candidates = List.of(DEFAULT_MEEK_BRIDGE);
+        }
+        safeAppendLog(runtime, "Using bridge file " + file.toAbsolutePath() + " (" + candidates.size() + " entries)");
+        if (skippedByBlacklist > 0) {
+            safeAppendLog(runtime, "Meek bridge lines skipped by blacklist: " + skippedByBlacklist);
+        }
+        runtime.bridgeFileName = "meek.txt";
+        runtime.bridgeCandidates = candidates;
+        runtime.maxBridgeAttempts = Math.min(MAX_BRIDGE_ATTEMPTS, candidates.size());
+        int index = Math.min(runtime.attempt - 1, candidates.size() - 1);
+        String selected = candidates.get(index);
+        runtime.selectedBridgeLine = selected;
+        runtime.selectedBridgeKey = selected;
+        runtime.selectedBridgeEndpoint = extractHostPortFromBridgeLine(selected.substring("Bridge ".length()));
+        safeAppendLog(runtime, "Using Meek bridge line " + indexForHumans(index) + "/" + candidates.size()
+                + " (attempt " + runtime.attempt + "/" + runtime.maxBridgeAttempts + ")");
+        String front = extractSnowflakeParam(selected, "front=");
+        if (front != null) {
+            safeAppendLog(runtime, "Meek front: " + front);
+        }
+        return List.of(selected);
+    }
+
     private List<String> loadBridgeCandidates(BridgeCatalogEntry entry, RuntimeInstance runtime) throws IOException {
         Path file = isManualBridgeFile(entry.fileName())
                 ? bridgesDir.resolve(entry.fileName())
@@ -590,6 +653,9 @@ public class TorManager {
         if (runtime.bridgeFileName == null) {
             return;
         }
+        if (runtime.spec.mode() == TorLaunchMode.MEEK) {
+            extractBrokenMeekBridge(runtime, line);
+        }
         if (runtime.spec.mode() == TorLaunchMode.WEBTUNNEL) {
             extractBrokenWebTunnelBridge(runtime, line);
         }
@@ -599,6 +665,18 @@ public class TorManager {
         Matcher matcher = HOST_PORT_PATTERN.matcher(line);
         if (matcher.find()) {
             runtime.badEndpoints.add(matcher.group(1));
+        }
+    }
+
+    private void extractBrokenMeekBridge(RuntimeInstance runtime, String line) {
+        if (!line.contains("Managed proxy \"/usr/bin/lyrebird\": Failed to connect to")) {
+            return;
+        }
+        runtime.badBridgeKeys.add(runtime.selectedBridgeKey);
+        if (line.contains("status code was 403") && !runtime.meekFrontRejectedLogged) {
+            runtime.meekFrontRejectedLogged = true;
+            safeAppendLog(runtime, "Meek hint: the current front/url pair was rejected with HTTP 403. This usually means the bridge line is outdated or this CDN front no longer works.");
+            safeAppendLog(runtime, "Meek hint: add another meek_lite bridge line to bridges/meek.txt and retry.");
         }
     }
 
@@ -694,7 +772,7 @@ public class TorManager {
             return null;
         }
         return switch (parts[0]) {
-            case "obfs4", "webtunnel", "snowflake" -> parts[1];
+            case "obfs4", "webtunnel", "snowflake", "meek", "meek_lite" -> parts[1];
             default -> parts[0];
         };
     }
@@ -787,7 +865,10 @@ public class TorManager {
             listener.onOverallLog(runtime.spec.name() + ": bridge retry limit reached after " + runtime.attempt + " attempts");
             return;
         }
-        if (runtime.spec.mode() != TorLaunchMode.SNOWFLAKE && runtime.selectedBridgeEndpoint != null) {
+        if (runtime.spec.mode() == TorLaunchMode.MEEK && runtime.selectedBridgeKey != null) {
+            runtime.badBridgeKeys.add(runtime.selectedBridgeKey);
+            persistBlacklist(runtime);
+        } else if (runtime.spec.mode() != TorLaunchMode.SNOWFLAKE && runtime.selectedBridgeEndpoint != null) {
             runtime.badEndpoints.add(runtime.selectedBridgeEndpoint);
             persistBlacklist(runtime);
         }
@@ -869,8 +950,8 @@ public class TorManager {
     }
 
     private Optional<String> loadPersistedSuccessfulBridgeLine(TorInstanceSpec spec) throws IOException {
-        if (spec.mode() == TorLaunchMode.SNOWFLAKE) {
-            String line = loadLastSuccessfulBridge("snowflake.txt");
+        if (spec.mode() == TorLaunchMode.SNOWFLAKE || spec.mode() == TorLaunchMode.MEEK) {
+            String line = loadLastSuccessfulBridge(spec.mode() == TorLaunchMode.MEEK ? "meek.txt" : "snowflake.txt");
             return line == null || line.isBlank() ? Optional.empty() : Optional.of(line);
         }
         BridgeCatalogEntry entry = spec.bridgeEntry();
@@ -912,6 +993,9 @@ public class TorManager {
     private int stallLimitFor(RuntimeInstance runtime) {
         if (runtime.spec.mode() == TorLaunchMode.SNOWFLAKE) {
             return SNOWFLAKE_STALL_SECONDS;
+        }
+        if (runtime.spec.mode() == TorLaunchMode.MEEK) {
+            return MEEK_STALL_SECONDS;
         }
         return BRIDGE_STALL_SECONDS;
     }
@@ -1013,7 +1097,8 @@ public class TorManager {
             case "vanilla-bridges" -> 1;
             case "obfs4-bridges" -> 2;
             case "snowflake" -> 3;
-            case "webtunnel" -> 4;
+            case "meek" -> 4;
+            case "webtunnel" -> 5;
             default -> 50;
         };
     }
@@ -1025,6 +1110,7 @@ public class TorManager {
             case "vanilla-bridges" -> settings.vanillaTorSocksPort();
             case "obfs4-bridges" -> settings.obfs4TorSocksPort();
             case "snowflake" -> settings.snowflakeTorSocksPort();
+            case "meek" -> settings.meekTorSocksPort();
             case "webtunnel" -> settings.webtunnelTorSocksPort();
             default -> 0;
         };
@@ -1074,6 +1160,7 @@ public class TorManager {
         private volatile boolean snowflakePeerAssigned;
         private volatile int snowflakeStalePeerCount;
         private volatile int snowflakeOpenTimeoutCount;
+        private volatile boolean meekFrontRejectedLogged;
 
         private RuntimeInstance(TorInstanceSpec spec, Path logFile, int attempt) {
             this.spec = spec;
